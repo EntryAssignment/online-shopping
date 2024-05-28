@@ -19,7 +19,7 @@ public class Order {
     private int id;
 
     @ManyToOne
-    @JoinColumn(name = "CustomerId")
+    @JoinColumn(name = "customer_id")
     private Customer customer;
 
     private Date orderDate;

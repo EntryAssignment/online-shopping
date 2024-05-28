@@ -14,7 +14,7 @@ public class Delivery {
     private int id;
 
     @OneToOne
-    @JoinColumn(name = "OrderID")
+    @JoinColumn(name = "order_id")
     private Order order;
 
     private String status;

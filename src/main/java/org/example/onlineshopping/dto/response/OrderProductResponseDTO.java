@@ -1,7 +1,9 @@
 package org.example.onlineshopping.dto.response;
 
 import lombok.Builder;
+import lombok.Data;
 
+@Data
 @Builder
 public class OrderProductResponseDTO {
     private int id;
