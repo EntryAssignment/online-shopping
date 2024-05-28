@@ -6,6 +6,7 @@ import org.example.onlineshopping.dto.response.OrderProductResponseDTO;
 import org.example.onlineshopping.entity.Order;
 import org.example.onlineshopping.entity.OrderProduct;
 import org.example.onlineshopping.entity.Product;
+import org.example.onlineshopping.exception.UserNotFoundException;
 import org.example.onlineshopping.repository.OrderProductRepository;
 import org.example.onlineshopping.repository.OrderRepository;
 import org.example.onlineshopping.repository.ProductRepository;
@@ -34,7 +35,7 @@ public class OrderProductService {
         Optional<OrderProduct> orderProductOptional = orderProductRepository.findById(id);
 
         if (orderProductOptional.isEmpty()) {
-            throw new IllegalArgumentException("order product not found with id: " + id);
+            throw new UserNotFoundException("order product not found with id: " + id);
         }
 
         return OrderProductResponseDTO.builder()
@@ -51,10 +52,10 @@ public class OrderProductService {
         Optional<Product> productOptional = productRepository.findById(productId);
 
         if (orderOptional.isEmpty()) {
-            throw new IllegalArgumentException("order not found with id: " + orderId);
+            throw new UserNotFoundException("order not found with id: " + orderId);
         }
         if (productOptional.isEmpty()) {
-            throw new IllegalArgumentException("product not found with id: " + productId);
+            throw new UserNotFoundException("product not found with id: " + productId);
         }
 
         OrderProduct orderProduct = OrderProduct.builder()

@@ -6,6 +6,7 @@ import org.example.onlineshopping.dto.request.OrderRequestDTO;
 import org.example.onlineshopping.dto.response.OrderResponseDTO;
 import org.example.onlineshopping.entity.Customer;
 import org.example.onlineshopping.entity.Order;
+import org.example.onlineshopping.exception.UserNotFoundException;
 import org.example.onlineshopping.repository.CustomerRepository;
 import org.example.onlineshopping.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class OrderService {
         Optional<Order> orderOptional = orderRepository.findById(id);
 
         if (orderOptional.isEmpty()) {
-            throw new IllegalArgumentException("Order not found with id: " + id);
+            throw new UserNotFoundException("Order not found with id: " + id);
         }
 
         return OrderResponseDTO.builder()
@@ -46,7 +47,7 @@ public class OrderService {
         Optional<Customer> customerOptional = customerRepository.findById(orderRequestDTO.getCustomerId());
 
         if (customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("customer not found with id: " + orderRequestDTO.getCustomerId());
+            throw new UserNotFoundException("customer not found with id: " + orderRequestDTO.getCustomerId());
         }
 
         Order order = Order.builder()

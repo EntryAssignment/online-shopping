@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.onlineshopping.dto.request.CustomerRequestDTO;
 import org.example.onlineshopping.dto.response.CustomerResponseDTO;
 import org.example.onlineshopping.entity.Customer;
+import org.example.onlineshopping.exception.UserNotFoundException;
 import org.example.onlineshopping.repository.CustomerRepository;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class CustomerService {
         Optional<Customer> customerOptional = customerRepository.findById(id);
 
         if (customerOptional.isEmpty()) {
-            throw new IllegalArgumentException("Customer not found with id: " + id);
+            throw new UserNotFoundException("Customer not found with id: " + id);
         }
 
         return CustomerResponseDTO.builder()

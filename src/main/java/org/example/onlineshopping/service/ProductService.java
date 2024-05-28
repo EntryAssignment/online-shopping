@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.example.onlineshopping.dto.request.ProductRequestDTO;
 import org.example.onlineshopping.dto.response.ProductResponseDTO;
 import org.example.onlineshopping.entity.Product;
+import org.example.onlineshopping.exception.UserNotFoundException;
 import org.example.onlineshopping.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
@@ -28,7 +29,7 @@ public class ProductService {
         Optional<Product> productOptional = productRepository.findById(id);
 
         if (productOptional.isEmpty()) {
-            throw new IllegalArgumentException("Product not found with id: " + id);
+            throw new UserNotFoundException("Product not found with id: " + id);
         }
 
         return ProductResponseDTO.builder()
@@ -49,7 +50,7 @@ public class ProductService {
         Optional<Product> optionalProduct = productRepository.findById(id);
 
         if (optionalProduct.isEmpty()) {
-            throw new IllegalArgumentException("Product not found with id: " + id);
+            throw new UserNotFoundException("Product not found with id: " + id);
         }
 
         Product product = optionalProduct.get();

@@ -7,6 +7,7 @@ import org.example.onlineshopping.dto.request.DeliveryUpdateRequestDTO;
 import org.example.onlineshopping.dto.response.DeliveryResponseDTO;
 import org.example.onlineshopping.entity.Delivery;
 import org.example.onlineshopping.entity.Order;
+import org.example.onlineshopping.exception.UserNotFoundException;
 import org.example.onlineshopping.repository.DeliveryRepository;
 import org.example.onlineshopping.repository.OrderRepository;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,7 @@ public class DeliveryService {
         Optional<Delivery> deliveryOptional = deliveryRepository.findById(id);
 
         if (deliveryOptional.isEmpty()) {
-            throw new IllegalArgumentException("Delivery not found with id: " + id);
+            throw new UserNotFoundException("Delivery not found with id: " + id);
         }
 
         return DeliveryResponseDTO.builder()
@@ -46,7 +47,7 @@ public class DeliveryService {
         Optional<Order> orderOptional = orderRepository.findById(deliveryRequestDTO.getOrderId());
 
         if (orderOptional.isEmpty()) {
-            throw new IllegalArgumentException("Order not found with id: " + deliveryRequestDTO.getOrderId());
+            throw new UserNotFoundException("Order not found with id: " + deliveryRequestDTO.getOrderId());
         }
 
         Delivery delivery = Delivery.builder()
@@ -60,7 +61,7 @@ public class DeliveryService {
         Optional<Delivery> optionalDelivery = deliveryRepository.findById(id);
 
         if (optionalDelivery.isEmpty()) {
-            throw new IllegalArgumentException("Delivery not found with id: " + id);
+            throw new UserNotFoundException("Delivery not found with id: " + id);
         }
 
         Delivery delivery = optionalDelivery.get();
