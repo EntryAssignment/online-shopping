@@ -22,36 +22,50 @@ public class DeliveryService {
 
     public List<DeliveryResponseDTO> getAllDelivery() {
         List<Delivery> deliveries = deliveryRepository.findAll();
-        return deliveries.stream().map(DeliveryResponseDTO::new).toList();
+
+        return deliveries.stream().map(delivery -> DeliveryResponseDTO.builder()
+                .id(delivery.getId())
+                .orderId(delivery.getOrder().getId())
+                .status(delivery.getStatus()).build()).toList();
     }
 
     public DeliveryResponseDTO getDeliveryById(int id) {
         Optional<Delivery> deliveryOptional = deliveryRepository.findById(id);
-        if (deliveryOptional.isPresent()) {
-            return new DeliveryResponseDTO(deliveryOptional.get());
-        } else {
+
+        if (deliveryOptional.isEmpty()) {
             throw new IllegalArgumentException("Delivery not found with id: " + id);
         }
+
+        return DeliveryResponseDTO.builder()
+                .id(deliveryOptional.get().getId())
+                .orderId(deliveryOptional.get().getOrder().getId())
+                .status(deliveryOptional.get().getStatus()).build();
     }
 
     public void creatDelivery(DeliveryRequestDTO deliveryRequestDTO) {
         Optional<Order> orderOptional = orderRepository.findById(deliveryRequestDTO.getOrderId());
-        if (orderOptional.isPresent()) {
-            Delivery delivery = new Delivery(orderOptional.get(), deliveryRequestDTO.getStatus());
-            deliveryRepository.save(delivery);
-        } else {
+
+        if (orderOptional.isEmpty()) {
             throw new IllegalArgumentException("Order not found with id: " + deliveryRequestDTO.getOrderId());
         }
+
+        Delivery delivery = Delivery.builder()
+                .order(orderOptional.get())
+                .status(deliveryRequestDTO.getStatus()).build();
+
+        deliveryRepository.save(delivery);
     }
 
     public void updateDelivery(int id, DeliveryUpdateRequestDTO deliveryUpdateRequestDTO) {
         Optional<Delivery> optionalDelivery = deliveryRepository.findById(id);
-        if (optionalDelivery.isPresent()) {
-            Delivery delivery = optionalDelivery.get();
-            delivery.setStatus(deliveryUpdateRequestDTO.getStatus());
-            deliveryRepository.save(delivery);
-        } else {
+
+        if (optionalDelivery.isEmpty()) {
             throw new IllegalArgumentException("Delivery not found with id: " + id);
         }
+
+        Delivery delivery = optionalDelivery.get();
+        delivery.setStatus(deliveryUpdateRequestDTO.getStatus());
+
+        deliveryRepository.save(delivery);
     }
 }

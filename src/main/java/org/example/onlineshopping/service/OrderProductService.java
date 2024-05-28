@@ -6,7 +6,6 @@ import org.example.onlineshopping.dto.response.OrderProductResponseDTO;
 import org.example.onlineshopping.entity.Order;
 import org.example.onlineshopping.entity.OrderProduct;
 import org.example.onlineshopping.entity.Product;
-import org.example.onlineshopping.repository.CustomerRepository;
 import org.example.onlineshopping.repository.OrderProductRepository;
 import org.example.onlineshopping.repository.OrderRepository;
 import org.example.onlineshopping.repository.ProductRepository;
@@ -20,39 +19,48 @@ import java.util.Optional;
 public class OrderProductService {
     private final ProductRepository productRepository;
     private final OrderRepository orderRepository;
-    private final CustomerRepository customerRepository;
     private final OrderProductRepository orderProductRepository;
 
     public List<OrderProductResponseDTO> getAllOrderProducts() {
-        List<OrderProduct> orders = orderProductRepository.findAll();
-        return orders.stream().map(OrderProductResponseDTO::new).toList();
+        List<OrderProduct> orderProducts = orderProductRepository.findAll();
+
+        return orderProducts.stream().map(orderProduct -> OrderProductResponseDTO.builder()
+                .id(orderProduct.getId())
+                .orderId(orderProduct.getOrder().getId())
+                .productId(orderProduct.getProduct().getId()).build()).toList();
     }
 
     public OrderProductResponseDTO getOrderProductsById(int id) {
         Optional<OrderProduct> orderProductOptional = orderProductRepository.findById(id);
-        if (orderProductOptional.isPresent()) {
-            return new OrderProductResponseDTO(orderProductOptional.get());
-        } else {
+
+        if (orderProductOptional.isEmpty()) {
             throw new IllegalArgumentException("order product not found with id: " + id);
         }
+
+        return OrderProductResponseDTO.builder()
+                .id(orderProductOptional.get().getId())
+                .orderId(orderProductOptional.get().getOrder().getId())
+                .productId(orderProductOptional.get().getProduct().getId()).build();
     }
 
-    public void creatOrderProduct(OrderProductRequestDTO orderProductRequestDTO){
+    public void creatOrderProduct(OrderProductRequestDTO orderProductRequestDTO) {
         int orderId = orderProductRequestDTO.getProductId();
         int productId = orderProductRequestDTO.getOrderId();
 
         Optional<Order> orderOptional = orderRepository.findById(orderId);
         Optional<Product> productOptional = productRepository.findById(productId);
 
-        if (orderOptional.isPresent()) {
-            if (productOptional.isPresent()) {
-                OrderProduct orderProduct = new OrderProduct(orderOptional.get(), productOptional.get());
-                orderProductRepository.save(orderProduct);
-            } else {
-                throw new IllegalArgumentException("product not found with id: " + productId);
-            }
-        } else {
+        if (orderOptional.isEmpty()) {
             throw new IllegalArgumentException("order not found with id: " + orderId);
         }
+        if (productOptional.isEmpty()) {
+            throw new IllegalArgumentException("product not found with id: " + productId);
+        }
+
+        OrderProduct orderProduct = OrderProduct.builder()
+                .order(orderOptional.get())
+                .product(productOptional.get()).build();
+
+        orderProductRepository.save(orderProduct);
     }
 }

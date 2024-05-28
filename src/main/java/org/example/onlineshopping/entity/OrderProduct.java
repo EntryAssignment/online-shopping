@@ -1,11 +1,15 @@
 package org.example.onlineshopping.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class OrderProduct {
     @Id
@@ -19,9 +23,4 @@ public class OrderProduct {
     @ManyToOne
     @JoinColumn(name = "productId")
     private Product product;
-
-    public OrderProduct(Order order, Product product) {
-        this.order = order;
-        this.product = product;
-    }
 }

@@ -1,6 +1,8 @@
 package org.example.onlineshopping.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +10,8 @@ import java.util.Date;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Order {
     @Id
@@ -19,9 +23,4 @@ public class Order {
     private Customer customer;
 
     private Date orderDate;
-
-    public Order(Customer customer, Date date) {
-        this.customer = customer;
-        this.orderDate = date;
-    }
 }

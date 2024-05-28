@@ -1,13 +1,12 @@
 package org.example.onlineshopping.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Delivery {
     @Id
@@ -20,8 +19,7 @@ public class Delivery {
 
     private String status;
 
-    public Delivery(Order order, String status) {
-        this.order = order;
+    public void setStatus(String status) {
         this.status = status;
     }
 }

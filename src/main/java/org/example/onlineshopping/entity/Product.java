@@ -4,14 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.example.onlineshopping.dto.request.ProductRequestDTO;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor
 public class Product {
     @Id
@@ -22,8 +20,11 @@ public class Product {
 
     private int price;
 
-    public Product(ProductRequestDTO productRequestDTO) {
-        this.name = productRequestDTO.getName();
-        this.price = productRequestDTO.getPrice();
+    public void setPrice(int price) {
+        this.price = price;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

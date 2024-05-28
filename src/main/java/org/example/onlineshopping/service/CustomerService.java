@@ -15,23 +15,30 @@ import java.util.Optional;
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
-    public List<CustomerResponseDTO> getAllCustomer() {
+    public List<CustomerResponseDTO> getAllCustomers() {
         List<Customer> customers = customerRepository.findAll();
-        return customers.stream().map(CustomerResponseDTO::new).toList();
+
+        return customers.stream().map(customer -> CustomerResponseDTO.builder()
+                .id(customer.getId())
+                .name(customer.getName()).build()).toList();
     }
 
     public CustomerResponseDTO getCustomerById(int id) {
         Optional<Customer> customerOptional = customerRepository.findById(id);
 
-        if (customerOptional.isPresent()) {
-            return new CustomerResponseDTO(customerOptional.get());
-        } else {
-            throw new IllegalArgumentException("customer not found with id: " + id);
+        if (customerOptional.isEmpty()) {
+            throw new IllegalArgumentException("Customer not found with id: " + id);
         }
+
+        return CustomerResponseDTO.builder()
+                .id(customerOptional.get().getId())
+                .name(customerOptional.get().getName()).build();
     }
 
     public void createCustomer(CustomerRequestDTO customerRequestDTO) {
-        Customer customer = new Customer(customerRequestDTO);
+        Customer customer = Customer.builder()
+                .name(customerRequestDTO.getName()).build();
+
         customerRepository.save(customer);
     }
 }

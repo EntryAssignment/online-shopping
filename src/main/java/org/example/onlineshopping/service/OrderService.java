@@ -20,27 +20,39 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final CustomerRepository customerRepository;
 
-    public List<OrderResponseDTO> getOrders() {
+    public List<OrderResponseDTO> getAllOrders() {
         List<Order> orders = orderRepository.findAll();
-        return orders.stream().map(OrderResponseDTO::new).toList();
+
+        return orders.stream().map(order -> OrderResponseDTO.builder()
+                .id(order.getId())
+                .customerId(order.getCustomer().getId())
+                .orderDate(order.getOrderDate()).build()).toList();
     }
 
     public OrderResponseDTO getOrderById(int id) {
         Optional<Order> orderOptional = orderRepository.findById(id);
-        if (orderOptional.isPresent()) {
-            return new OrderResponseDTO(orderOptional.get());
-        } else {
-            throw new IllegalArgumentException("order not found with id: " + id);
+
+        if (orderOptional.isEmpty()) {
+            throw new IllegalArgumentException("Order not found with id: " + id);
         }
+
+        return OrderResponseDTO.builder()
+                .id(orderOptional.get().getId())
+                .customerId(orderOptional.get().getCustomer().getId())
+                .orderDate(orderOptional.get().getOrderDate()).build();
     }
 
     public void createOrder(OrderRequestDTO orderRequestDTO) {
         Optional<Customer> customerOptional = customerRepository.findById(orderRequestDTO.getCustomerId());
-        if (customerOptional.isPresent()) {
-            Order order = new Order(customerOptional.get(), new Date());
-            orderRepository.save(order);
-        } else {
+
+        if (customerOptional.isEmpty()) {
             throw new IllegalArgumentException("customer not found with id: " + orderRequestDTO.getCustomerId());
         }
+
+        Order order = Order.builder()
+                .customer(customerOptional.get())
+                .orderDate(new Date()).build();
+
+        orderRepository.save(order);
     }
 }

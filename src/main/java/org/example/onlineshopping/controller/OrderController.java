@@ -16,7 +16,7 @@ public class OrderController {
 
     @GetMapping
     public List<OrderResponseDTO> getOrders() {
-        return orderService.getOrders();
+        return orderService.getAllOrders();
     }
 
     @GetMapping("/{id}")
